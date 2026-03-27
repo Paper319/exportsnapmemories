@@ -4,7 +4,7 @@ Updated Python Script To Merge Tag and Organize Snapchat Export (Uses Folders Fr
 
 Just a simple python script that I remade into one single script that merges tags and deletes old overlays and organizes into Month (Year) folders.
 Script came from https://github.com/annsopirate/snapchat-memories-organizer
-Since I was having so many issues using the json file all of the links were not working so I found this script and did some edits. It works 98% of the time out of 2800 files about 17 didnt merge. Ill Take.
+Since I was having so many issues using the json file all of the links were not working so I found this script and did some edits. It works 98% of the time out of 4800 files about 20 didnt merge. Ill Take it.
 Please make a master backup in case you notice things are gone.
 
 Requirements:
