@@ -38,14 +38,8 @@ def run_master_process():
             overlay_f = f"{base_name}-overlay.png"
             path_media = os.path.join(root, media_f)
             
-            # --- DATE PARSING LOGIC ---
-            date_match = re.search(r'^(\d{4})-(\d{2})-(\d{2})', base_name)
-            formatted_date = None
-            if date_match:
-                year, month, day = date_match.groups()
-                time_match = re.search(r'^\d{4}-\d{2}-\d{2}_(\d{2})-(\d{2})-(\d{2})', base_name)
-                hour, minute, second = time_match.groups() if time_match else ("12", "00", "00")
-                formatted_date = f"{year}:{month}:{day} {hour}:{minute}:{second}"
+            # Check if it's a video file (to handle specific video date fixes)
+            is_video = ext_media.lower() in [".mp4", ".mov", ".webm"]
 
             # CASE A: OVERLAY EXISTS (FUSE THEN FIX)
             if overlay_f in file_set:
@@ -53,35 +47,68 @@ def run_master_process():
                 final_path = os.path.join(root, f"{base_name}_FUSION{ext_media}")
 
                 if SIMULATION:
-                    print(f"   [+] Would Merge & Fix: {media_f}")
+                    print(f"   [+] Would Merge & Fix Dates: {media_f}")
                 else:
                     filter_cmd = "[1:v][0:v]scale2ref[ovr][base];[base][ovr]overlay=0:0"
                     ffmpeg_cmd = [FFMPEG_PATH, "-y", "-i", path_media, "-i", path_overlay, "-filter_complex", filter_cmd, "-map_metadata", "0", "-c:a", "copy", final_path]
                     
                     try:
+                        # 1. Merge the files
                         subprocess.run(ffmpeg_cmd, check=True, capture_output=True)
-                        if formatted_date:
-                            exif_cmd = [EXIFTOOL_PATH, f"-AllDates={formatted_date}", f"-FileCreateDate={formatted_date}", f"-FileModifyDate={formatted_date}", "-overwrite_original", final_path]
-                            subprocess.run(exif_cmd, check=True, capture_output=True)
+                        
+                        # 2. Fix Fusion Dates
+                        exif_cmd = [
+                            EXIFTOOL_PATH, 
+                            "-TagsFromFile", path_media, 
+                            "-time:all", 
+                            "-FileModifyDate<FileCreateDate", 
+                            "-FileCreateDate<FileCreateDate", 
+                            "-overwrite_original", 
+                            final_path
+                        ]
+                        subprocess.run(exif_cmd, check=True, capture_output=True)
                         
                         os.remove(path_overlay)
                         os.remove(path_media)
-                        print(f"   [Merged] {base_name} ({formatted_date})")
+                        print(f"   [Merged & Dates Fixed] {base_name}")
                     except Exception as e:
                         print(f"   [!] Error merging {media_f}: {e}")
 
-            # CASE B: NO OVERLAY (FIX ORIGINAL FILE DIRECTLY)
+            # CASE B: NO OVERLAY (NON-FUSION)
             else:
-                if SIMULATION:
-                    print(f"   [*] Would Fix Metadata (No Overlay): {media_f}")
-                else:
-                    try:
-                        if formatted_date:
-                            exif_cmd = [EXIFTOOL_PATH, f"-AllDates={formatted_date}", f"-FileCreateDate={formatted_date}", f"-FileModifyDate={formatted_date}", "-overwrite_original", path_media]
+                if is_video:
+                    if SIMULATION:
+                        print(f"   [*] Would Sync OS Dates for Video: {media_f}")
+                    else:
+                        try:
+                            # Syncs the OS file dates strictly to the internal origin 'CreateDate'
+                            exif_cmd = [
+                                EXIFTOOL_PATH, 
+                                "-FileModifyDate<CreateDate", 
+                                "-FileCreateDate<CreateDate", 
+                                "-overwrite_original", 
+                                path_media
+                            ]
                             subprocess.run(exif_cmd, check=True, capture_output=True)
-                        print(f"   [Fixed] {media_f} ({formatted_date})")
-                    except Exception as e:
-                        print(f"   [!] Error fixing {media_f}: {e}")
+                            print(f"   [Synced Video OS Dates] {media_f}")
+                        except Exception as e:
+                            print(f"   [!] Error fixing video {media_f}: {e}")
+                else:
+                    # Fix Date Modified for standalone images
+                    if SIMULATION:
+                        print(f"   [*] Would Sync OS Modify Date for Standalone Image: {media_f}")
+                    else:
+                        try:
+                            exif_cmd = [
+                                EXIFTOOL_PATH, 
+                                "-FileModifyDate<FileCreateDate", 
+                                "-overwrite_original", 
+                                path_media
+                            ]
+                            subprocess.run(exif_cmd, check=True, capture_output=True)
+                            print(f"   [Synced Image OS Modify Date] {media_f}")
+                        except Exception as e:
+                            print(f"   [!] Error fixing image {media_f}: {e}")
 
     # --- STEP 2: SORT EVERYTHING ---
     print("\n[Step 2/3] Sorting Files...")
