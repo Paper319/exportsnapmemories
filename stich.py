@@ -3,7 +3,7 @@ import subprocess
 from datetime import datetime
 
 # --- CONFIGURATION ---
-TARGET_FOLDER = r"C:\Users\Austin\Desktop\SnapchatFix\Output\memories"
+TARGET_FOLDER = r"C:\PATH\TO\MEMORIES\FOLDER\NO\SPACE\IN\FOLDER\NAME"
 FFMPEG_PATH = "ffmpeg" # Assuming it's in your PATH
 EXIFTOOL_PATH = "exiftool" # Assuming it's in your PATH
 
