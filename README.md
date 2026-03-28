@@ -24,8 +24,9 @@ How to use Script
 1. Download your snapchat data, should be all zip folders.
 2. Take the memories folder from each zip folder and extract and merge them all into one giant memories folder. You should have just one memories folder that has all your .jpg and .png, Overwrite memories.html you dont need it
 3. Take the script and put it in the root folder next to the memories folder, open it and change the folder location to the memories folder location
-4. Change simulation to FALSE after you ran it to actually make any file changes.
-5. Upload new folders where you want.
-6. DONE
+5. Change simulation to FALSE after you ran it to actually make any file changes.
+6. Run in CMD in that folder python stich.py run that command twice to make sure it got everything then in same folder run puthon snapchatfix.py (It will take a while depending on size)
+7. Upload new folders where you want.
+8. DONE
 
 Will set the metadata data from the file name so wherever you upload it,  will have the correct day and also time yay!
