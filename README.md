@@ -2,6 +2,7 @@
 Updated Python Script To Merge Tag and Organize Snapchat Export (Uses Folders From Zip)
 
 NEW Stich.py a script you should run before the main script. Run it on your entire large memories folder and it will stich together the videos that need to be. (Run it 2-3 times because it misses some sometimes) Then run the snapchatfix.py after you ran the stich.py
+Just know the stich.py wont do every video Idk why maybe ill fix it maybe I wont idk.
 
 Just a simple python script that I remade into one single script that merges tags and deletes old overlays and organizes into Month (Year) folders.
 Script came from https://github.com/annsopirate/snapchat-memories-organizer
