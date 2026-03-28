@@ -25,7 +25,7 @@ How to use Script
 2. Take the memories folder from each zip folder and extract and merge them all into one giant memories folder. You should have just one memories folder that has all your .jpg and .png, Overwrite memories.html you dont need it
 3. Take the script and put it in the root folder next to the memories folder, open it and change the folder location to the memories folder location
 5. Change simulation to FALSE after you ran it to actually make any file changes.
-6. Run in CMD in that folder python stich.py run that command twice to make sure it got everything then in same folder run puthon snapchatfix.py (It will take a while depending on size)
+6. Run in CMD in that folder python stich.py run that command twice to make sure it got everything then in same folder run python snapchatfix.py (It will take a while depending on size)
 7. Upload new folders where you want.
 8. DONE
 
