@@ -18,7 +18,7 @@ def get_video_files_with_times(folder):
         if f.lower().endswith((".mp4", ".mov")):
             full_path = os.path.join(folder, f)
             # Getting the OS creation time (Make sure your OS dates are relatively accurate first!)
-            ctime = os.path.getctime(full_path) 
+            ctime = os.path.getmtime(full_path) 
             videos.append({"path": full_path, "name": f, "time": ctime})
     
     # Sort by time
